@@ -1,0 +1,25 @@
+# Environment files (contain local paths)
+.env
+
+# Log files
+*.log
+logs.txt
+
+# Docker volumes and workspace
+workspace/
+comfyui_*/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.bak

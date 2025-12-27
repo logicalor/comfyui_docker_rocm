@@ -1,0 +1,14 @@
+workspace/
+comfyui_workspace/
+comfyui_output/
+comfyui_models/
+comfyui_custom_nodes/
+comfyui_checkpoints/
+comfyui_logs/
+comfyui_cache/
+.git/
+.gitignore
+.env
+*.md
+docker-compose.yml
+.dockerignore

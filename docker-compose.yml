@@ -1,0 +1,71 @@
+services:
+  comfyui-pip:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: comfyui-pip:latest
+    container_name: comfyui-pip
+    env_file:
+      - .env
+    
+    # GPU access for AMD
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    
+    # Required for AMD GPU access
+    group_add:
+      - video
+      - render
+    
+    # Security options for GPU access
+    security_opt:
+      - seccomp:unconfined
+    
+    # IPC mode for shared memory
+    ipc: host
+    
+    # Network mode
+    network_mode: bridge
+    
+    # Keep container running
+    stdin_open: true
+    tty: true
+    
+    # Expose ComfyUI web interface
+    ports:
+      - "8188:8188"
+    
+    # Mount ComfyUI directories
+    # comfy-cli installs to /workspace/ComfyUI/, these mounts overlay its subdirectories
+    volumes:
+      # Persistent workspace for ComfyUI installation
+      - comfyui-pip-data:/workspace
+      
+      # ComfyUI directories (customizable via .env) - these overlay ComfyUI's subdirs
+      - ${COMFYUI_OUTPUT}:/workspace/ComfyUI/output
+      - ${COMFYUI_MODELS}:/workspace/ComfyUI/models
+      - ${COMFYUI_CUSTOM_NODES}:/workspace/ComfyUI/custom_nodes
+      - ${COMFYUI_LOGS}:/workspace/ComfyUI/logs
+      - ${COMFYUI_CACHE}:/workspace/ComfyUI/cache
+      - ${COMFYUI_USER_DEFAULT}:/workspace/ComfyUI/user/default
+
+      # Keep host timezone in container
+      - /etc/localtime:/etc/localtime:ro
+    
+    # Environment variables
+    environment:
+      - HSA_OVERRIDE_GFX_VERSION=11.0.0
+      # Use the RX 7900 XTX (GPU 0) and RX 7600 XT (GPU 1)
+      - ROCR_VISIBLE_DEVICES=0,1
+      - CUDA_VISIBLE_DEVICES=0,1
+      # ComfyUI runtime options (set in .env file)
+      - COMFYUI_EXTRA_ARGS=${COMFYUI_EXTRA_ARGS:-}
+    
+    # Note: Container starts as root, init.sh fixes permissions then drops to ubuntu (1000:1000)
+    
+    # Restart policy
+    restart: no
+
+volumes:
+  comfyui-pip-data:

@@ -147,6 +147,12 @@ for node_dir in "$COMFYUI_DIR/custom_nodes"/*/; do
                 # Has 'dotenv' instead of 'python-dotenv'
                 pip install --no-cache-dir ollama python-dotenv 2>/dev/null || true
                 ;;
+            "ComfyUI-Crystools")
+                # Skip pynvml (NVIDIA only), install AMD-compatible packages instead
+                pip install --no-cache-dir deepdiff numpy Pillow py-cpuinfo piexif 2>/dev/null || true
+                # Install AMD GPU monitoring (may help prevent segfault)
+                pip install --no-cache-dir pyamdgpuinfo 2>/dev/null || true
+                ;;
             *)
                 # Install normally, continue on error (some packages may be platform-specific)
                 pip install --no-cache-dir -r "${node_dir}requirements.txt" 2>/dev/null || true

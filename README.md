@@ -4,7 +4,7 @@ A Docker-based ComfyUI setup optimized for AMD GPUs using ROCm.
 
 ## Features
 
-- ROCm 6.2 support for AMD GPUs (RX 7000 series, etc.)
+- Configurable ROCm and PyTorch versions via build args
 - Python virtual environment isolation
 - Automatic ComfyUI and ComfyUI-Manager installation
 - Configurable data directories via environment variables
@@ -95,6 +95,27 @@ environment:
 ```
 
 Adjust `HSA_OVERRIDE_GFX_VERSION` based on your GPU architecture.
+
+### Build Configuration
+
+Set ROCm and PyTorch versions in `.env` (requires rebuild):
+
+```dotenv
+# ROCm base image version (e.g., 6.2, 6.4.4)
+ROCM_VERSION=6.2
+
+# PyTorch ROCm wheel version (e.g., rocm6.2, rocm6.4)
+PYTORCH_ROCM_VERSION=rocm6.2
+```
+
+Available combinations:
+- `ROCM_VERSION=6.2` + `PYTORCH_ROCM_VERSION=rocm6.2` (default, stable)
+- `ROCM_VERSION=6.4.4` + `PYTORCH_ROCM_VERSION=rocm6.4` (newer)
+
+After changing build configuration, rebuild with:
+```bash
+docker compose build --no-cache && docker compose up -d
+```
 
 ## Commands
 

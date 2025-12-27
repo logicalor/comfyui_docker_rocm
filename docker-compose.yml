@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        ROCM_VERSION: ${ROCM_VERSION:-6.2}
+        PYTORCH_ROCM_VERSION: ${PYTORCH_ROCM_VERSION:-rocm6.2}
     image: comfyui-pip:latest
     container_name: comfyui-pip
     env_file:

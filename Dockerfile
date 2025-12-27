@@ -1,4 +1,11 @@
-FROM rocm/dev-ubuntu-24.04:6.2
+# Build arguments for customizing versions
+ARG ROCM_VERSION=6.2
+ARG PYTORCH_ROCM_VERSION=rocm6.2
+
+FROM rocm/dev-ubuntu-24.04:${ROCM_VERSION}
+
+# Re-declare ARGs after FROM (they don't persist)
+ARG PYTORCH_ROCM_VERSION=rocm6.2
 
 # Prevent interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -46,8 +53,9 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# Install PyTorch with ROCm 6.2 support (into venv)
-RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2
+# Install PyTorch with ROCm support (into venv)
+# PYTORCH_ROCM_VERSION is set via build arg (e.g., rocm6.2, rocm6.4)
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/${PYTORCH_ROCM_VERSION}
 
 # Install ComfyUI via pip (into venv)
 RUN pip install --no-cache-dir comfy-cli

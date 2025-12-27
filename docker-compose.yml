@@ -53,13 +53,11 @@ services:
       # Keep host timezone in container
       - /etc/localtime:/etc/localtime:ro
     
-    # Environment variables
+    # Environment variables (configured in .env)
     environment:
-      - HSA_OVERRIDE_GFX_VERSION=11.0.0
-      # Use the RX 7900 XTX (GPU 0) and RX 7600 XT (GPU 1)
-      - ROCR_VISIBLE_DEVICES=0,1
-      - CUDA_VISIBLE_DEVICES=0,1
-      # ComfyUI runtime options (set in .env file)
+      - HSA_OVERRIDE_GFX_VERSION=${HSA_OVERRIDE_GFX_VERSION:-11.0.0}
+      - ROCR_VISIBLE_DEVICES=${ROCR_VISIBLE_DEVICES:-0}
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
       - COMFYUI_EXTRA_ARGS=${COMFYUI_EXTRA_ARGS:-}
     
     # Note: Container starts as root, init.sh fixes permissions then drops to ubuntu (1000:1000)
